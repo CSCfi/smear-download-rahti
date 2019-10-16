@@ -6,9 +6,10 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
@@ -29,18 +30,20 @@ public class MainView extends VerticalLayout {
     private ComboBox quality = new ComboBox("Quality Level:");
     private ComboBox averaging = new ComboBox("Averaging:");
     private ComboBox averagingType = new ComboBox("Averaging Type:");
-    //private CheckBoxGroup asemat =
+    private RadioButtonGroup asemat = new RadioButtonGroup<>();
     private Select timewindow = new Select("Day", "Week", "Month");
     private Select kategoria = new Select("Select variable category");
     private Button dlBtn;
     private Checkbox calcAvailability;
+    private TextField tf;
+    private Checkbox filterTitleCheckbox;
+    private Checkbox filterDescriptionCheckbox;
+    private Checkbox filterSourceCheckbox;
 
     public MainView() {
         layout = new HorizontalLayout();
-        Button button = new Button("Click me",
-                event -> Notification.show("Clicked!"));
-        add(button);
-        add(layout);
+
+
         VerticalLayout left = new VerticalLayout();
         VerticalLayout right = new VerticalLayout();
         tablesection = new VerticalLayout();
@@ -63,6 +66,13 @@ public class MainView extends VerticalLayout {
         timesplit.add(nextbutton);
         queryFirstRowLayout.add(timesplit);
         averaging.setItems("NONE", "30MIN", "1HOUR");
+
+        VerticalLayout querySecondRowLayout = new VerticalLayout();
+        querySecondRowLayout.add(quality);
+        querySecondRowLayout.add(averaging);
+        querySecondRowLayout.add(averagingType);
+        left.add(querySecondRowLayout);
+
         VerticalLayout queryThirdRowLayout = new VerticalLayout();
         calcAvailability = new Checkbox("Calculate availability on update", false);
         //calcAvailability.setDescription("Check this if you want availability calculated for all variables in the table after clicking update. Please note for long time spans this operation may be very slow.");
@@ -70,12 +80,31 @@ public class MainView extends VerticalLayout {
         helpPopup.add(new Label(Constants.HELPCONTENT));
         helpPopup.setWidth("500px");
         queryThirdRowLayout.add(helpPopup);
-        //queryThirdRowLayout.add(asemat);
+        queryThirdRowLayout.add(asemat);
         queryThirdRowLayout.add(kategoria);
         queryThirdRowLayout.add(calcAvailability);
         left.add(queryThirdRowLayout);
 
 
+        VerticalLayout queryFourthRowLayout = new VerticalLayout();
+         tf = new TextField("Filter");
+        tf.setVisible(true);
+        filterTitleCheckbox = new Checkbox("Variable");
+        filterDescriptionCheckbox = new Checkbox("Description");
+        filterSourceCheckbox = new Checkbox("Source");
+        HorizontalLayout filterBoxRowLayout = new HorizontalLayout();
+        filterBoxRowLayout.add(filterTitleCheckbox);
+        filterBoxRowLayout.add(filterDescriptionCheckbox);
+        filterBoxRowLayout.add(filterSourceCheckbox);
+        HorizontalLayout filterTextRowLayout = new HorizontalLayout();
+        filterTextRowLayout.add(tf);
+        left.add(filterTextRowLayout);
+        left.add(filterBoxRowLayout);
+        left.add(queryFourthRowLayout);
+
+        layout.add(left);
+        layout.add(right);
+        add(layout);
     }
 
       private void buildTable() {
